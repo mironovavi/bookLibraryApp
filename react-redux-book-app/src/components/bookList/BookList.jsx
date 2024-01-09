@@ -7,17 +7,17 @@ import { BsBookmarkStarFill, BsBookmarkStar } from 'react-icons/bs';
 import {
   selectTitleFilter,
   selectAuthorFilter,
+  selectFavoriteFilter,
 } from '../../redux/filter-slice/reducer';
 
 export default function BookList() {
   const booksSelector = useSelector((state) => state.books);
   const titleFilterSelector = useSelector(selectTitleFilter);
   const authorFilterSelector = useSelector(selectAuthorFilter);
-  // console.log(booksSelector);
+  const filterFavoriteBook = useSelector(selectFavoriteFilter);
   const dispatch = useDispatch();
 
   function handleClick(id) {
-    // console.log(id);
     dispatch(deleteBook(id));
   }
 
@@ -34,16 +34,26 @@ export default function BookList() {
       .toLowerCase()
       .includes(authorFilterSelector.toLowerCase());
 
-    // const matches = [];
-    // matches.push(matchesTitle, matchesAuthor);
+    const matchesFavorite = filterFavoriteBook ? item.isFavorite : true;
 
-    // console.log({
-    //   title: item.title,
-    //   matches: matches,
-    // });
-
-    return matchesTitle && matchesAuthor;
+    return matchesTitle && matchesAuthor && matchesFavorite;
   });
+
+  function highlightMatch(text, filter) {
+    if (!filter) return text;
+    const reqex = new RegExp(`(${filter})`, 'gi');
+    // console.log(text.split(reqex));
+    return text.split(reqex).map((item, idx) => {
+      if (item.toLowerCase() === filter.toLowerCase()) {
+        return (
+          <span key={idx} className="highlight">
+            {item}
+          </span>
+        );
+      }
+      return item;
+    });
+  }
 
   return (
     <div className="app-block book-list">
@@ -55,7 +65,10 @@ export default function BookList() {
           {filterBooks.map((item, idx) => (
             <li key={item.id}>
               <div className="book-info">
-                {++idx}. {item.title} by <strong>{item.author}</strong>
+                {++idx}. {highlightMatch(item.title, titleFilterSelector)} by{' '}
+                <strong>
+                  {highlightMatch(item.author, authorFilterSelector)}
+                </strong>
               </div>
               <div className="book-actions">
                 <span onClick={() => handleFavoriteBook(item.id)}>
