@@ -7,3 +7,10 @@ export function addBook(newBook) {
     payload: newBook,
   };
 }
+
+export function deleteBook(id) {
+  return {
+    type: actionTypes.DELETE_BOOK,
+    payload: id,
+  };
+}
