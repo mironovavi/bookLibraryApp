@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
+// import axios from 'axios';
 // import { v4 as uuidv4 } from 'uuid';
 import createBookWithId from '../../utilis/createBookWithId';
-import { addBook } from '../../redux/books/actionCreators';
+// import { addBook } from '../../redux/books/actionCreators';
 import './BookForm.css';
 import books from '../data/books.json';
-import { thunkFunk } from '../../redux/books-slice/books-slice';
+import { fetchBook, addBook } from '../../redux/books-slice/reducer';
 
 export default function BookForm() {
   const [title, setTitle] = useState('');
@@ -66,7 +66,7 @@ export default function BookForm() {
   // }
 
   async function handleRandomBookAPI() {
-    dispatch(thunkFunk);
+    dispatch(fetchBook());
   }
 
   // //отправка асинхронного запроса с помощью axios
