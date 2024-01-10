@@ -6,6 +6,7 @@ import createBookWithId from '../../utilis/createBookWithId';
 import { addBook } from '../../redux/books/actionCreators';
 import './BookForm.css';
 import books from '../data/books.json';
+import { thunkFunk } from '../../redux/books-slice/books-slice';
 
 export default function BookForm() {
   const [title, setTitle] = useState('');
@@ -23,7 +24,7 @@ export default function BookForm() {
       //   isFavorite: false,
       // };
       // console.log(addBook(book));
-      const book = createBookWithId({ title: title, author: author });
+      const book = createBookWithId({ title: title, author: author }, 'manual');
       dispatch(addBook(book));
 
       // console.log(title, author);
@@ -42,21 +43,44 @@ export default function BookForm() {
     //   id: uuidv4(),
     //   isFavorite: false,
     // };
-    const randomBookId = createBookWithId(randomBook);
+    const randomBookId = createBookWithId(randomBook, 'random');
     dispatch(addBook(randomBookId));
   }
 
+  //запрос перенесли в books-slice.jsx
+
+  // // thunk function -функция которая отправляет такие щапросы в redux
+  // //отправка запроса с помощью redux
+  // async function thunkFunk(dispatch, getState) {
+  //   console.log(getState());
+  //   try {
+  //     const response = await axios.get('http://localhost:4000/random-book');
+  //     // console.log(response);
+  //     if (response?.data?.title && response?.data?.author) {
+  //       dispatch(addBook(createBookWithId(response.data, 'API')));
+  //     }
+  //   } catch (err) {
+  //     console.log('Error fetching random book', err);
+  //   }
+  //   console.log(getState());
+  // }
+
   async function handleRandomBookAPI() {
-    try {
-      const response = await axios.get('http://localhost:4000/random-book');
-      // console.log(response);
-      if (response?.data?.title && response?.data?.author) {
-        dispatch(addBook(createBookWithId(response.data)));
-      }
-    } catch (err) {
-      console.log('Error fetching random book', err);
-    }
+    dispatch(thunkFunk);
   }
+
+  // //отправка асинхронного запроса с помощью axios
+  // async function handleRandomBookAPI() {
+  //   try {
+  //     const response = await axios.get('http://localhost:4000/random-book');
+  //     // console.log(response);
+  //     if (response?.data?.title && response?.data?.author) {
+  //       dispatch(addBook(createBookWithId(response.data, 'API')));
+  //     }
+  //   } catch (err) {
+  //     console.log('Error fetching random book', err);
+  //   }
+  // }
 
   return (
     <div className="app-block book-form">

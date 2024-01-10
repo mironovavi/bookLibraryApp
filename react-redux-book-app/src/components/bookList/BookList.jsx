@@ -69,6 +69,7 @@ export default function BookList() {
                 <strong>
                   {highlightMatch(item.author, authorFilterSelector)}
                 </strong>
+                ({item.source})
               </div>
               <div className="book-actions">
                 <span onClick={() => handleFavoriteBook(item.id)}>
