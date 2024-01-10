@@ -2,6 +2,7 @@ import axios from 'axios';
 // import { addBook } from '../books/actionCreators';
 import createBookWithId from '../../utilis/createBookWithId';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { setError } from '../error-slice/error-slice';
 
 const initialState = [];
 // const initialState = {
@@ -11,10 +12,19 @@ const initialState = [];
 
 //путем добавления extraReducer в slice  мы интегрируем запрос - настраеваяется реагирование на fullfiled, успещный отыет от сервера
 
-export const fetchBook = createAsyncThunk('book/fetchBook', async () => {
-  const response = await axios.get('http://localhost:5000/random-book');
-  return response.data;
-});
+export const fetchBook = createAsyncThunk(
+  'book/fetchBook',
+  async (url, thunkAPI) => {
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (err) {
+      // console.log(err);
+      thunkAPI.dispatch(setError(err.message));
+      throw err;
+    }
+  }
+);
 
 const bookSlice = createSlice({
   name: 'book',
@@ -34,16 +44,22 @@ const bookSlice = createSlice({
       );
     },
   },
+  // OPTION1
   extraReducers: (builder) => {
     builder.addCase(fetchBook.fulfilled, (state, action) => {
       if (action?.payload?.title && action?.payload?.author) {
         state.push(createBookWithId(action.payload, 'API'));
       }
     });
-    // builder.addCase(fetchBook.rejected, (state, action) => {
-    //   state.errMesg = action.error.message;
-    // });
   },
+  // OPTION2 - non actual
+  // extraReducers: {
+  //   [fetchBook.fulfilled]: (state, action) => {
+  //     if (action?.payload?.title && action?.payload?.author) {
+  //       state.push(createBookWithId(action.payload, 'API'));
+  //     }
+  //   },
+  // },
 });
 
 export const { addBook, deleteBook, toggleFavoriteBook } = bookSlice.actions;

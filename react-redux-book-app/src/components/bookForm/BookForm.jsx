@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { FaSpinner } from 'react-icons/fa';
 // import axios from 'axios';
 // import { v4 as uuidv4 } from 'uuid';
 import { fetchBook, addBook } from '../../redux/books-slice/reducer';
@@ -12,6 +13,7 @@ import books from '../data/books.json';
 export default function BookForm() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
+  const [isloading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   function handleSumbit(event) {
@@ -69,7 +71,12 @@ export default function BookForm() {
   // }
 
   async function handleRandomBookAPI() {
-    dispatch(fetchBook());
+    try {
+      setIsLoading(true);
+      await dispatch(fetchBook('http://localhost:4000/random-book-delayed'));
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   // //отправка асинхронного запроса с помощью axios
@@ -112,8 +119,19 @@ export default function BookForm() {
         <button type="button" onClick={handleRandomBook}>
           Add random book
         </button>
-        <button type="button" onClick={handleRandomBookAPI}>
-          Add random book via API
+        <button
+          type="button"
+          onClick={handleRandomBookAPI}
+          disabled={isloading}
+        >
+          {isloading ? (
+            <>
+              <span>Loading Book ...</span>
+              <FaSpinner className="spinner" />
+            </>
+          ) : (
+            'Add random book via API'
+          )}
         </button>
       </form>
     </div>
