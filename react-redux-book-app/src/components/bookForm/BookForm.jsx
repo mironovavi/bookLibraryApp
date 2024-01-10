@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 // import axios from 'axios';
 // import { v4 as uuidv4 } from 'uuid';
+import { fetchBook, addBook } from '../../redux/books-slice/reducer';
+import { setError } from '../../redux/error-slice/error-slice';
 import createBookWithId from '../../utilis/createBookWithId';
 // import { addBook } from '../../redux/books/actionCreators';
 import './BookForm.css';
 import books from '../data/books.json';
-import { fetchBook, addBook } from '../../redux/books-slice/reducer';
 
 export default function BookForm() {
   const [title, setTitle] = useState('');
@@ -30,6 +31,8 @@ export default function BookForm() {
       // console.log(title, author);
       setTitle('');
       setAuthor('');
+    } else {
+      dispatch(setError('You must fill title and author'));
     }
   }
 
