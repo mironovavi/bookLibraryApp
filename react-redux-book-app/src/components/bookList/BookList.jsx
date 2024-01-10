@@ -6,6 +6,7 @@ import { BsBookmarkStarFill, BsBookmarkStar } from 'react-icons/bs';
 import {
   deleteBook,
   toggleFavoriteBook,
+  selectBooks,
 } from '../../redux/books-slice/reducer';
 import {
   selectTitleFilter,
@@ -14,7 +15,8 @@ import {
 } from '../../redux/filter-slice/reducer';
 
 export default function BookList() {
-  const booksSelector = useSelector((state) => state.books);
+  const booksSelector = useSelector(selectBooks);
+  // console.log(booksSelector);
   const titleFilterSelector = useSelector(selectTitleFilter);
   const authorFilterSelector = useSelector(selectAuthorFilter);
   const filterFavoriteBook = useSelector(selectFavoriteFilter);
